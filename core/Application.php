@@ -14,7 +14,11 @@ class Application
 
             if (method_exists($this->controller, $this->action)) {
                 call_user_func_array([$this->controller, $this->action], $this->params);
+            } else {
+                http_response_code(404);
             }
+        } else {
+            http_response_code(404);
         }
     }
 
