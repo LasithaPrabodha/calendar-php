@@ -2,13 +2,9 @@
 
 (function ($) {
 
-  var q = function(selector) {
+  function q(selector) {
     return document.querySelector(selector);
   };
-
-  var delID = 0;
-  var EventState = {};
-  var isUpdating = false;
 
   $('#startTime').datetimepicker({
     format: 'YYYY-MM-DD HH:mm'
@@ -17,23 +13,29 @@
     format: 'YYYY-MM-DD HH:mm'
   });
 
+  var delID = 0;
+  var EventState = {};
+  var isUpdating = false;
+
+
+
   /**
    *  Update date time function
    */
   function updateDateTime(data) {
     var requestData = new FormData();
 
-    requestData.append('start', moment(data.start).format());
+    requestData.append('start', moment(data.start).format('YYYY-MM-DD HH:mm'));
     if (data.end) {
-      requestData.append('end', moment(data.end).format());
+      requestData.append('end', moment(data.end).format('YYYY-MM-DD HH:mm'));
     }
 
     if (data.end && moment(data.start).format('HH:mm') === '00:00' && moment(data.end).format('HH:mm') === '00:00') {
-      requestData.append('allDay', '1');
+      requestData.append('allday', '1');
     } else if (!data.end && moment(data.start).format('HH:mm') === '00:00') {
-      requestData.append('allDay', '1');
+      requestData.append('allday', '1');
     } else {
-      requestData.append('allDay', '0');
+      requestData.append('allday', '0');
     }
 
     var reqUrl = 'events/updateEventDateTime/' + data.id;
@@ -92,6 +94,7 @@
     q('#eventName').value = EventState.title;
     q('#eventName').setAttribute('readonly', true);
     q('#startTime').value = EventState.start;
+    console.log(q('#startTime').value)
     q('#endTime').value = EventState.end;
 
     if (
@@ -146,7 +149,7 @@
       data.append('end', q('#endTime').value);
     }
     data.append('url', q('#extUrl').value);
-    data.append('allDay', q('#allday').checked ? '1' : '0');
+    data.append('allday', q('#allday').checked ? '1' : '0');
 
     var reqUrl = '';
 

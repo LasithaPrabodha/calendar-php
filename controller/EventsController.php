@@ -97,7 +97,7 @@ class EventsController extends Controller
             'created_by' => $this->session->get('username'),
             'course_desc' => $this->input->post('courseDesc'),
             'certified_by' => $this->input->post('certifiedBy'),
-            'all_day_event' => $this->input->post('allDay'),
+            'all_day_event' => $this->input->post('allday'),
             'end' => $this->input->post('end'),
             'url' => $this->input->post('url'),
         );
@@ -136,7 +136,7 @@ class EventsController extends Controller
             'updated_by' => $this->session->get('username'),
             'course_desc' => $this->input->post('courseDesc'),
             'certified_by' => $this->input->post('certifiedBy'),
-            'all_day_event' => (int)$this->input->post('allDay'),
+            'all_day_event' => (int)$this->input->post('allday'),
             'end' => $this->input->post('end'),
             'url' => $this->input->post('url'),
         );
@@ -171,11 +171,11 @@ class EventsController extends Controller
         $reqData = array(
             'id' => $id,
             'updated_by' => $this->session->get('username'),
-            'all_day_event' => (int)$this->input->post('allDay'),
+            'all_day_event' => (int)$this->input->post('allday'),
             'start' => $this->input->post('start'),
             'end' => $this->input->post('end'),
         );
-
+        
         $added = $this->model->updateEventDateTime($reqData);
         if ($added === true) {
             $response = array("status" => true, "message" => 'Event updated.');
