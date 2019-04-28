@@ -94,7 +94,6 @@
     q('#eventName').value = EventState.title;
     q('#eventName').setAttribute('readonly', true);
     q('#startTime').value = EventState.start;
-    console.log(q('#startTime').value)
     q('#endTime').value = EventState.end;
 
     if (
@@ -110,7 +109,6 @@
     }
     q('#courseDesc').value = EventState.course_desc;
     q('#certifiedBy').value = EventState.certified_by;
-    q('#extUrl').value = EventState.url;
 
     document.querySelector('#addEventModal .modal-title').innerHTML = 'Update Event';
     isUpdating = true;
@@ -140,6 +138,15 @@
     e.preventDefault();
 
     var data = new FormData();
+    if (q('#eventName').value.trim() === '') {
+      alert('Event name is required');
+      return false;
+    }
+
+    if (q('#startTime').value.trim() === '') {
+      alert('Start date/time is required');
+      return false;
+    }
 
     data.append('start', q('#startTime').value);
     data.append('courseDesc', q('#courseDesc').value);
@@ -148,7 +155,6 @@
     if (q('#endTime').value.trim() !== '') {
       data.append('end', q('#endTime').value);
     }
-    data.append('url', q('#extUrl').value);
     data.append('allday', q('#allday').checked ? '1' : '0');
 
     var reqUrl = '';
@@ -174,26 +180,12 @@
         } else if (!res.body) {
           alert('Sorry... Request Failed');
         } else {
-          if (!isUpdating) {
-            var newEvent = {
-              title: q('#eventName').value,
-              start: q('#startTime').value,
-              end: q('#endTime').value
-            };
-            if (q('#extUrl').value) {
-              calendar.addEvent(Object.assign(newEvent, { url: q('#extUrl').value }));
-            } else {
-              calendar.addEvent(newEvent);
-            }
-          } else {
-            calendar.refetchEvents();
-          }
+          calendar.refetchEvents();
 
           q('#allday').checked = false;
           q('#eventName').value = '';
           q('#startTime').value = '';
           q('#endTime').value = '';
-          q('#extUrl').value = '';
           q('#courseDesc').value = '';
           q('#certifiedBy').value = '';
 
@@ -236,7 +228,6 @@
           q('#eventName').value = '';
           q('#startTime').value = '';
           q('#endTime').value = '';
-          q('#extUrl').value = '';
           q('#courseDesc').value = '';
           q('#certifiedBy').value = '';
 
@@ -295,7 +286,6 @@
             }
             q('#courseDesc2').value = res.body.course_desc;
             q('#certifiedBy2').value = res.body.certified_by;
-            q('#extUrl2').value = res.body.url;
 
             $('#eventDetailsModal').modal('show');
           }

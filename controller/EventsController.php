@@ -98,8 +98,7 @@ class EventsController extends Controller
             'course_desc' => $this->input->post('courseDesc'),
             'certified_by' => $this->input->post('certifiedBy'),
             'all_day_event' => $this->input->post('allday'),
-            'end' => $this->input->post('end'),
-            'url' => $this->input->post('url'),
+            'end' => $this->input->post('end')
         );
 
         $added = $this->model->addEvent($reqData);
@@ -138,7 +137,6 @@ class EventsController extends Controller
             'certified_by' => $this->input->post('certifiedBy'),
             'all_day_event' => (int)$this->input->post('allday'),
             'end' => $this->input->post('end'),
-            'url' => $this->input->post('url'),
         );
 
         $updated = $this->model->updateEvent($reqData);
