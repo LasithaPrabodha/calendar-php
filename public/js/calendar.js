@@ -20,118 +20,6 @@
 
 
   /**
-   *  Update date time function
-   */
-  function updateDateTime(data) {
-    var requestData = new FormData();
-
-    requestData.append('start', moment(data.start).format('YYYY-MM-DD HH:mm'));
-    if (data.end) {
-      requestData.append('end', moment(data.end).format('YYYY-MM-DD HH:mm'));
-    }
-
-    if (data.end && moment(data.start).format('HH:mm') === '00:00' && moment(data.end).format('HH:mm') === '00:00') {
-      requestData.append('allday', '1');
-    } else if (!data.end && moment(data.start).format('HH:mm') === '00:00') {
-      requestData.append('allday', '1');
-    } else {
-      requestData.append('allday', '0');
-    }
-
-    var reqUrl = 'events/updateEventDateTime/' + data.id;
-
-    superagent
-      .post(reqUrl)
-      .send(requestData)
-      .set('accept', 'json')
-      .end((err, res) => {
-        if (err && err.status !== 200) {
-          if (!res) {
-            alert(err.status + ' ' + err.message);
-          } else {
-            alert('Sorry... ' + res.body.message);
-          }
-        } else if (!res.body) {
-          alert('Sorry... Request Failed');
-        } else {
-        }
-      });
-  }
-
-  /**
-   * Delete a event
-   */
-  q('#eventDetailsForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    if (confirm('Are you sure you want to delete this event?')) {
-      superagent
-        .del('events/deleteEvent/' + delID)
-        .set('accept', 'json')
-        .end((err, res) => {
-          if (err && err.status !== 200) {
-            if (!res) {
-              alert(err.status + ' ' + err.message);
-            } else {
-              alert('Sorry... ' + res.body.message);
-            }
-          } else {
-            calendar.getEventById(delID).remove();
-          }
-        });
-    } else {
-    }
-    $('#eventDetailsModal').modal('hide');
-  });
-
-  /**
-   * Open update event modal
-   */
-  q('#updateEventBtn').addEventListener('click', function (e) {
-    e.preventDefault();
-    $('#eventDetailsModal').modal('hide');
-
-    q('#eventName').value = EventState.title;
-    q('#eventName').setAttribute('readonly', true);
-    q('#startTime').value = EventState.start;
-    q('#endTime').value = EventState.end;
-
-    if (
-      EventState.end &&
-      moment(EventState.start).format('HH:mm') === '00:00' &&
-      moment(EventState.end).format('HH:mm') === '00:00'
-    ) {
-      q('#allday').checked = true;
-    } else if (!EventState.end && moment(EventState.start).format('HH:mm') === '00:00') {
-      q('#allday').checked = true;
-    } else {
-      q('#allday').checked = false;
-    }
-    q('#courseDesc').value = EventState.course_desc;
-    q('#certifiedBy').value = EventState.certified_by;
-
-    document.querySelector('#addEventModal .modal-title').innerHTML = 'Update Event';
-    isUpdating = true;
-
-    if (q('#allday').checked) {
-      $('#startTime')
-        .data('DateTimePicker')
-        .format('YYYY-MM-DD');
-      $('#endTime')
-        .data('DateTimePicker')
-        .format('YYYY-MM-DD');
-    } else {
-      $('#startTime')
-        .data('DateTimePicker')
-        .format('YYYY-MM-DD HH:mm');
-      $('#endTime')
-        .data('DateTimePicker')
-        .format('YYYY-MM-DD HH:mm');
-    }
-    $('#addEventModal').modal('show');
-  });
-
-  /**
    *  Add event/Update event form submit button listener
    */
   q('#addEventForm').addEventListener('submit', function (e) {
@@ -213,6 +101,118 @@
         .data('DateTimePicker')
         .format('YYYY-MM-DD HH:mm');
     }
+  });
+
+  /**
+     * Open update event modal
+     */
+  q('#updateEventBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    $('#eventDetailsModal').modal('hide');
+
+    q('#eventName').value = EventState.title;
+    q('#eventName').setAttribute('readonly', true);
+    q('#startTime').value = EventState.start;
+    q('#endTime').value = EventState.end;
+
+    if (
+      EventState.end &&
+      moment(EventState.start).format('HH:mm') === '00:00' &&
+      moment(EventState.end).format('HH:mm') === '00:00'
+    ) {
+      q('#allday').checked = true;
+    } else if (!EventState.end && moment(EventState.start).format('HH:mm') === '00:00') {
+      q('#allday').checked = true;
+    } else {
+      q('#allday').checked = false;
+    }
+    q('#courseDesc').value = EventState.course_desc;
+    q('#certifiedBy').value = EventState.certified_by;
+
+    document.querySelector('#addEventModal .modal-title').innerHTML = 'Update Event';
+    isUpdating = true;
+
+    if (q('#allday').checked) {
+      $('#startTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD');
+      $('#endTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD');
+    } else {
+      $('#startTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD HH:mm');
+      $('#endTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD HH:mm');
+    }
+    $('#addEventModal').modal('show');
+  });
+
+  /**
+   *  Update date time function
+   */
+  function updateDateTime(data) {
+    var requestData = new FormData();
+
+    requestData.append('start', moment(data.start).format('YYYY-MM-DD HH:mm'));
+    if (data.end) {
+      requestData.append('end', moment(data.end).format('YYYY-MM-DD HH:mm'));
+    }
+
+    if (data.end && moment(data.start).format('HH:mm') === '00:00' && moment(data.end).format('HH:mm') === '00:00') {
+      requestData.append('allday', '1');
+    } else if (!data.end && moment(data.start).format('HH:mm') === '00:00') {
+      requestData.append('allday', '1');
+    } else {
+      requestData.append('allday', '0');
+    }
+
+    var reqUrl = 'events/updateEventDateTime/' + data.id;
+
+    superagent
+      .post(reqUrl)
+      .send(requestData)
+      .set('accept', 'json')
+      .end((err, res) => {
+        if (err && err.status !== 200) {
+          if (!res) {
+            alert(err.status + ' ' + err.message);
+          } else {
+            alert('Sorry... ' + res.body.message);
+          }
+        } else if (!res.body) {
+          alert('Sorry... Request Failed');
+        } else {
+        }
+      });
+  }
+
+  /**
+   * Delete a event
+   */
+  q('#eventDetailsForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (confirm('Are you sure you want to delete this event?')) {
+      superagent
+        .del('events/deleteEvent/' + delID)
+        .set('accept', 'json')
+        .end((err, res) => {
+          if (err && err.status !== 200) {
+            if (!res) {
+              alert(err.status + ' ' + err.message);
+            } else {
+              alert('Sorry... ' + res.body.message);
+            }
+          } else {
+            calendar.getEventById(delID).remove();
+          }
+        });
+    } else {
+    }
+    $('#eventDetailsModal').modal('hide');
   });
 
   /**
