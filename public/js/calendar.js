@@ -256,10 +256,7 @@
     },
     eventClick: function (eventClickInfo) {
       eventClickInfo.jsEvent.preventDefault();
-      if (eventClickInfo.event.url) {
-        window.open(eventClickInfo.event.url);
-        window.focus();
-      }
+
       superagent
         .get('events/getEvent/' + eventClickInfo.event.id)
         .set('accept', 'json')
