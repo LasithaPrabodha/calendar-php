@@ -21,8 +21,9 @@
 
   /**
    *  Add event/Update event form submit button listener
+   *  Add Event Save Button click
    */
-  q('#addEventForm').addEventListener('submit', function (e) {
+  q('#addUpdateEventForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     var data = new FormData();
@@ -105,6 +106,8 @@
 
   /**
      * Open update event modal
+     * 
+     * Event Update button click
      */
   q('#updateEventBtn').addEventListener('click', function (e) {
     e.preventDefault();
@@ -191,6 +194,8 @@
 
   /**
    * Delete a event
+   * 
+   * Event details delete button click
    */
   q('#eventDetailsForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -210,9 +215,9 @@
             calendar.getEventById(delID).remove();
           }
         });
-    } else {
+      $('#eventDetailsModal').modal('hide');
     }
-    $('#eventDetailsModal').modal('hide');
+
   });
 
   /**
