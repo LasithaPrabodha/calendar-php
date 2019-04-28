@@ -1,14 +1,11 @@
 'use strict';
 
-(function($) {
-  var calendarEl = document.getElementById('calendar');
-  var eventName = document.getElementById('eventName');
-  var startTime = document.getElementById('startTime');
-  var endTime = document.getElementById('endTime');
-  var allDay = document.getElementById('allday');
-  var courseDesc = document.getElementById('courseDesc');
-  var certifiedBy = document.getElementById('certifiedBy');
-  var extUrl = document.getElementById('extUrl');
+(function ($) {
+
+  var q = function(selector) {
+    return document.querySelector(selector);
+  };
+
   var delID = 0;
   var EventState = {};
   var isUpdating = false;
@@ -62,7 +59,7 @@
   /**
    * Delete a event
    */
-  document.getElementById('eventDetailsForm').addEventListener('submit', function(e) {
+  q('#eventDetailsForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     if (confirm('Are you sure you want to delete this event?')) {
@@ -88,51 +85,68 @@
   /**
    * Open update event modal
    */
-  document.getElementById('updateEventBtn').addEventListener('click', function(e) {
+  q('#updateEventBtn').addEventListener('click', function (e) {
     e.preventDefault();
     $('#eventDetailsModal').modal('hide');
 
-    eventName.value = EventState.title;
-    eventName.setAttribute('readonly', true);
-    startTime.value = EventState.start;
-    endTime.value = EventState.end;
+    q('#eventName').value = EventState.title;
+    q('#eventName').setAttribute('readonly', true);
+    q('#startTime').value = EventState.start;
+    q('#endTime').value = EventState.end;
+
     if (
       EventState.end &&
       moment(EventState.start).format('HH:mm') === '00:00' &&
       moment(EventState.end).format('HH:mm') === '00:00'
     ) {
-      allday.checked = true;
+      q('#allday').checked = true;
     } else if (!EventState.end && moment(EventState.start).format('HH:mm') === '00:00') {
-      allday.checked = true;
+      q('#allday').checked = true;
     } else {
-      allday.checked = false;
+      q('#allday').checked = false;
     }
-    courseDesc.value = EventState.course_desc;
-    certifiedBy.value = EventState.certified_by;
-    extUrl.value = EventState.url;
+    q('#courseDesc').value = EventState.course_desc;
+    q('#certifiedBy').value = EventState.certified_by;
+    q('#extUrl').value = EventState.url;
 
     document.querySelector('#addEventModal .modal-title').innerHTML = 'Update Event';
     isUpdating = true;
+
+    if (q('#allday').checked) {
+      $('#startTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD');
+      $('#endTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD');
+    } else {
+      $('#startTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD HH:mm');
+      $('#endTime')
+        .data('DateTimePicker')
+        .format('YYYY-MM-DD HH:mm');
+    }
     $('#addEventModal').modal('show');
   });
 
   /**
    *  Add event/Update event form submit button listener
    */
-  document.getElementById('addEventForm').addEventListener('submit', function(e) {
+  q('#addEventForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     var data = new FormData();
 
-    data.append('start', startTime.value);
-    data.append('courseDesc', courseDesc.value);
-    data.append('certifiedBy', certifiedBy.value);
+    data.append('start', q('#startTime').value);
+    data.append('courseDesc', q('#courseDesc').value);
+    data.append('certifiedBy', q('#certifiedBy').value);
 
-    if (endTime.value.trim() !== '') {
-      data.append('end', endTime.value);
+    if (q('#endTime').value.trim() !== '') {
+      data.append('end', q('#endTime').value);
     }
-    data.append('url', extUrl.value);
-    data.append('allDay', allDay.checked ? '1' : '0');
+    data.append('url', q('#extUrl').value);
+    data.append('allDay', q('#allday').checked ? '1' : '0');
 
     var reqUrl = '';
 
@@ -140,7 +154,7 @@
       reqUrl = 'events/updateEvent/' + EventState.id;
     } else {
       reqUrl = 'events/addEvent';
-      data.append('eventName', eventName.value);
+      data.append('eventName', q('#eventName').value);
     }
 
     superagent
@@ -159,12 +173,12 @@
         } else {
           if (!isUpdating) {
             var newEvent = {
-              title: eventName.value,
-              start: startTime.value,
-              end: endTime.value
+              title: q('#eventName').value,
+              start: q('#startTime').value,
+              end: q('#endTime').value
             };
-            if (extUrl.value) {
-              calendar.addEvent(Object.assign(newEvent, { url: extUrl.value }));
+            if (q('#extUrl').value) {
+              calendar.addEvent(Object.assign(newEvent, { url: q('#extUrl').value }));
             } else {
               calendar.addEvent(newEvent);
             }
@@ -172,13 +186,13 @@
             calendar.refetchEvents();
           }
 
-          allDay.checked = false;
-          eventName.value = '';
-          startTime.value = '';
-          endTime.value = '';
-          extUrl.value = '';
-          courseDesc.value = '';
-          certifiedBy.value = '';
+          q('#allday').checked = false;
+          q('#eventName').value = '';
+          q('#startTime').value = '';
+          q('#endTime').value = '';
+          q('#extUrl').value = '';
+          q('#courseDesc').value = '';
+          q('#certifiedBy').value = '';
 
           $('#addEventModal').modal('hide');
         }
@@ -188,7 +202,7 @@
   /**
    * All day or not button listener
    */
-  document.getElementById('allday').addEventListener('change', function() {
+  q('#allday').addEventListener('change', function () {
     if (this.checked) {
       $('#startTime')
         .data('DateTimePicker')
@@ -209,22 +223,22 @@
   /**
    * Calendar object which controls the calendar behaviour
    */
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  var calendar = new FullCalendar.Calendar(q('#calendar'), {
     plugins: ['interaction', 'dayGrid', 'timeGrid', 'list'],
     customButtons: {
       addBtn: {
         text: 'Add Event',
-        click: function() {
-          allDay.checked = false;
-          eventName.value = '';
-          startTime.value = '';
-          endTime.value = '';
-          extUrl.value = '';
-          courseDesc.value = '';
-          certifiedBy.value = '';
+        click: function () {
+          q('#allday').checked = false;
+          q('#eventName').value = '';
+          q('#startTime').value = '';
+          q('#endTime').value = '';
+          q('#extUrl').value = '';
+          q('#courseDesc').value = '';
+          q('#certifiedBy').value = '';
 
           isUpdating = false;
-          eventName.removeAttribute('readonly');
+          q('#eventName').removeAttribute('readonly');
           $('#addEventModal').modal('show');
         }
       }
@@ -240,13 +254,13 @@
     eventLimit: true,
     selectable: true,
     weekNumbers: true,
-    eventResize: function(eventResizeInfo) {
+    eventResize: function (eventResizeInfo) {
       updateDateTime(eventResizeInfo.event);
     },
-    eventDrop: function(info) {
+    eventDrop: function (info) {
       updateDateTime(info.event);
     },
-    eventClick: function(eventClickInfo) {
+    eventClick: function (eventClickInfo) {
       eventClickInfo.jsEvent.preventDefault();
       if (eventClickInfo.event.url) {
         window.open(eventClickInfo.event.url);
@@ -266,19 +280,19 @@
           } else {
             EventState = res.body;
             delID = eventClickInfo.event.id;
-            document.getElementById('eventName2').value = res.body.title;
-            document.getElementById('startTime2').value = res.body.start;
-            document.getElementById('endTime2').value = res.body.end;
+            q('#eventName2').value = res.body.title;
+            q('#startTime2').value = res.body.start;
+            q('#endTime2').value = res.body.end;
             if (res.body.allDay === 1) {
-              document.getElementById('tick').classList.remove('hidden');
-              document.getElementById('cross').classList.add('hidden');
+              q('#tick').classList.remove('hidden');
+              q('#cross').classList.add('hidden');
             } else {
-              document.getElementById('tick').classList.add('hidden');
-              document.getElementById('cross').classList.remove('hidden');
+              q('#tick').classList.add('hidden');
+              q('#cross').classList.remove('hidden');
             }
-            document.getElementById('courseDesc2').value = res.body.course_desc;
-            document.getElementById('certifiedBy2').value = res.body.certified_by;
-            document.getElementById('extUrl2').value = res.body.url;
+            q('#courseDesc2').value = res.body.course_desc;
+            q('#certifiedBy2').value = res.body.certified_by;
+            q('#extUrl2').value = res.body.url;
 
             $('#eventDetailsModal').modal('show');
           }
@@ -286,7 +300,7 @@
     },
     events: {
       url: 'events/getEvents',
-      failure: function(e) {
+      failure: function (e) {
         if (JSON.parse(e.xhr.response).message) {
           var message = JSON.parse(e.xhr.response).message;
           alert(message);
@@ -295,8 +309,8 @@
         }
       }
     },
-    loading: function(bool) {
-      document.getElementById('loading').style.display = bool ? 'block' : 'none';
+    loading: function (bool) {
+      q('#loading').style.display = bool ? 'block' : 'none';
     }
   });
 
