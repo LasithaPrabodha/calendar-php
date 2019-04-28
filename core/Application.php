@@ -24,7 +24,7 @@ class Application
 
     protected function prepareURL()
     {
-        $request = trim($_SERVER['REQUEST_URI'], '/');
+        $request = rtrim($_SERVER['REQUEST_URI'], '/');
 
         if (!empty($request)) {
             $request = explode('?', $request);
