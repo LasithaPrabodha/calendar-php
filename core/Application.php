@@ -34,7 +34,7 @@ class Application
             $this->action = isset($url[1]) ? $url[1] : 'index';
 
             unset($url[0], $url[1]);
-
+            
             $this->params = !empty($url) ? array_values($url) : [];
         }
     }

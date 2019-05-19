@@ -141,7 +141,6 @@ class Events extends Database
 
     public function updateEventDateTime($data)
     {
-
         /* create a prepared statement */
         if ($stmt = $this->db->prepare("UPDATE `calendar` SET `updated_by`=?,`all_day_event`=?, `start`=?,`end`=?  WHERE `calendar`.`id` = ?")) {
 
