@@ -1,6 +1,6 @@
-'use strict';
-
 (function($) {
+  'use strict';
+
   var calendarEl = document.getElementById('calendar');
   var eventName = document.getElementById('eventName');
   var startTime = document.getElementById('startTime');
